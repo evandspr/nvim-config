@@ -1,4 +1,4 @@
-# My Nvim Configuration
+# My Nvim configuration
 
 My personal Nvim config. I designed it to be lightweight, efficient, and that it meets all my needs.
 
