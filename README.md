@@ -13,7 +13,7 @@ My personal Nvim config. I designed it to be lightweight, efficient, and that it
 This configuration uses the following plugins, managed by Lazy.nvim:
 
 *   [tpope/vim-sleuth](https://github.com/tpope/vim-sleuth): Automatically detects indentation settings.
-*   [nvim-tree/nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons): Provides icons for NvimTree, Telescope, etc...
+*   [nvim-tree/nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons): Provides icons for NvimTree, Telescope, etc.
 *   [nvim-tree/nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua): A file explorer.
 *   [vim-airline/vim-airline](https://github.com/vim-airline/vim-airline): A statusline plugin.
 *   [lewis6991/gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim): Displays Git signs in the gutter.
