@@ -227,16 +227,19 @@ return {
             },
           },
         },
+        cmake = {},
         -- Ajoute d'autres serveurs ici (ex: 'pyright', 'tsserver', 'gopls', 'clangd')
         -- pyright = {},
         -- tsserver = {},
       }
+      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       -- Assure l'installation des serveurs et outils via Mason
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Formatteur Lua (utilisé par conform.nvim)
         -- Ajoute d'autres outils ici (ex: 'prettier', 'eslint_d', 'black', 'isort')
+        'cmake',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -425,6 +428,14 @@ return {
         }),
       })
 
+      -- Spécifier les sources pour Makefile (ajoute ce bloc)
+      cmp.setup.filetype('Makefile', {
+        sources = cmp.config.sources {
+          { name = 'path' },
+          { name = 'buffer' },
+        },
+      })
+
       cmp.setup {
         snippet = {
           expand = function(args)
@@ -465,7 +476,21 @@ return {
           { name = 'buffer', priority = 700 },
           { name = 'nvim_lsp_signature_help', priority = 600 },
         },
+        completio = {
+          autocomplete = { require('cmp.types').cmp.TriggerEvent.TextChanged },
+        },
       }
+      vim.api.nvim_create_autocmd('TextChangedI', {
+        pattern = '*',
+        callback = function()
+          local line = vim.api.nvim_get_current_line()
+          local col = vim.api.nvim_win_get_cursor(0)[2]
+          local before_cursor = line:sub(1, col)
+          if before_cursor:match '/$' then -- Déclenche après '/'
+            require('cmp').complete()
+          end
+        end,
+      })
     end,
   },
 

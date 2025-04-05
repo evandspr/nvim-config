@@ -52,3 +52,4 @@ map('n', '<leader>N', '<cmd>!norminette %<CR>', { desc = 'Run norminette on curr
 map('n', '<leader>F', '<cmd>!find . -name "*.c" -print0 | xargs -0 echo >> Makefile<CR>', { desc = 'Find .c files and append to Makefile' })
 --Attention: Cette commande écrase à la fin du Makefile.  Adaptez selon vos besoins.
 map('n', '<leader>d', '<cmd>!lldb %<CR>', { desc = 'Start LLDB for debugging' })
+map('v', '<leader>ub', '<cmd>commenttoggle<cr>', { desc = 'uncomment iblocks' })
