@@ -212,6 +212,7 @@ return {
       'WhoIsSethDaniel/mason-tool-installer.nvim', -- Pour assurer l'installation d'outils
       { 'j-hui/fidget.nvim', opts = {} }, -- Indicateur de statut LSP
       'hrsh7th/cmp-nvim-lsp', -- Source LSP pour nvim-cmp
+      'hrsh7th/cmp-cmdline',
     },
     config = function()
       local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -374,12 +375,20 @@ return {
       {
         'L3MON4D3/LuaSnip', -- Moteur de snippets
         build = (vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0) and nil or 'make install_jsregexp', -- Build pour le support regex (sauf Windows/si make absent)
+        config = function()
+          require('luasnip.loaders.from_vscode').lazy_load() -- Charger les snippets VSCode
+          require('luasnip.loaders.from_lua').load { paths = { '~/.config/nvim/lua/snippets/' } }
+        end,
         dependencies = {
           -- Collection de snippets (optionnel, décommente si tu en veux)
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function() require('luasnip.loaders.from_vscode').lazy_load() end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
+          -- Charger mes snippets custom
+          { 'zbirenbaum/copilot.lua', event = 'InsertEnter' },
         },
       },
       'saadparwaiz1/cmp_luasnip', -- Source Luasnip pour nvim-cmp
@@ -387,11 +396,34 @@ return {
       'hrsh7th/cmp-path', -- Source pour les chemins de fichiers
       'hrsh7th/cmp-buffer', -- Source pour les mots du buffer actuel
       'hrsh7th/cmp-nvim-lsp-signature-help', -- Aide à la signature de fonction
+      'hrsh7th/cmp-cmdline',
     },
     config = function()
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {} -- Setup de base pour Luasnip
+
+      -- Configuration pour la ligne de commande (recherche)
+      cmp.setup.cmdline('/', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = 'buffer' },
+        },
+      })
+
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' },
+        }, {
+          {
+            name = 'cmdline',
+            option = {
+              ignore_cmds = { 'Man', '!' },
+            },
+          },
+        }),
+      })
 
       cmp.setup {
         snippet = {
@@ -408,7 +440,12 @@ return {
           ['<C-Space>'] = cmp.mapping.complete(), -- Forcer l'affichage des complétions
           ['<C-y>'] = cmp.mapping.confirm { select = true }, -- Confirmer la sélection
           -- Mappings pour Luasnip (navigation dans les snippets)
-          ['<C-l>'] = cmp.mapping(function()
+          ['<Tab>'] = cmp.mapping(function(fallback)
+            if require('luasnip').expand_or_jumpable() then
+              require('luasnip').expand_or_jump()
+            else
+              fallback()
+            end
             if luasnip.expand_or_locally_jumpable() then
               luasnip.expand_or_jump()
             end
@@ -421,14 +458,13 @@ return {
           -- Utiliser <CR> pour confirmer au lieu de <C-y> si tu préfères
           -- ['<CR>'] = cmp.mapping.confirm { select = true },
         },
-        sources = cmp.config.sources({ -- Ordre des sources de complétion
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'path' },
-        }, {
-          { name = 'buffer' },
-          { name = 'nvim_lsp_signature_help' },
-        }),
+        sources = cmp.config.sources { -- Ordre des sources de complétion
+          { name = 'nvim_lsp', priority = 1000 },
+          { name = 'luasnip', priority = 900 },
+          { name = 'path', priority = 800 },
+          { name = 'buffer', priority = 700 },
+          { name = 'nvim_lsp_signature_help', priority = 600 },
+        },
       }
     end,
   },
