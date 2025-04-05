@@ -1,79 +1,98 @@
-# My Nvim configuration
+# Configuration Neovim Optimisée
 
-My personal Nvim config. I designed it to be lightweight, efficient, and that it meets all my needs.
+Une configuration Neovim moderne, modulaire et performante, optimisée pour le développement C/C++ et les projets 42.
 
-## ⚙️ Prerequisites
+## Caractéristiques
 
-*   [Neovim](https://neovim.io/) (version 0.9 or later)
-*   A Nerd Font (I personnaly use [MesloLGS NF](https://github.com/romuloogc/meslo-lgs-nerd-font) - other Nerd Fonts will also work)
-*   A terminal with true color support (I use Windows Terminal + WSL)
+- **Architecture modulaire** : Configuration organisée et extensible
+- **Performance** : Chargement paresseux (lazy-loading) des plugins pour un démarrage rapide
+- **Complétion intelligente** : Autocomplétion contextuelle avec nvim-cmp
+- **Support LSP** : Configuration optimisée des serveurs de langage
+- **Explorateur de fichiers** : Navigation intuitive avec NvimTree
+- **Recherche avancée** : Recherche puissante avec Telescope
+- **Syntaxe améliorée** : Coloration syntaxique précise avec Treesitter
+- **Support Git** : Intégration Git avec Gitsigns
+- **Interface moderne** : Design épuré et fonctionnel
+- **Support 42** : Outils spécifiques pour la Norminette et les projets de l'école 42
 
-## 🔌 Plugins
+## Structure
 
-This configuration uses the following plugins, managed by Lazy.nvim:
+```
+nvim-config/
+├── init.lua                  # Point d'entrée principal
+├── lua/
+│   ├── config.lua            # Configuration centralisée
+│   ├── colors.lua            # Configuration des couleurs
+│   ├── plugins.lua           # Définition des plugins
+│   ├── core/                 # Fonctionnalités de base
+│   │   ├── options.lua       # Options globales
+│   │   ├── keymaps.lua       # Mappings de touches
+│   │   └── autocommands.lua  # Commandes automatiques
+│   └── plugins/              # Configuration des plugins
+│       ├── airline.lua       # Config barre de statut
+│       ├── cmp.lua           # Config autocomplétion
+│       ├── gitsigns.lua      # Config intégration Git
+│       ├── lsp.lua           # Config LSP
+│       ├── noice.lua         # Config UI améliorée
+│       ├── nvimtree.lua      # Config explorateur
+│       ├── telescope.lua     # Config recherche
+│       ├── treesitter.lua    # Config syntaxe
+│       └── whichkey.lua      # Config aide aux touches
+└── snippets/                 # Fragments de code
+    └── c.lua                 # Snippets pour C
+```
 
-*   [tpope/vim-sleuth](https://github.com/tpope/vim-sleuth): Automatically detects indentation settings.
-*   [nvim-tree/nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons): Provides icons for NvimTree, Telescope, etc.
-*   [nvim-tree/nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua): A file explorer.
-*   [vim-airline/vim-airline](https://github.com/vim-airline/vim-airline): A statusline plugin.
-*   [lewis6991/gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim): Displays Git signs in the gutter.
-*   [folke/which-key.nvim](https://github.com/folke/which-key.nvim): Displays available keybindings.
-*   [nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim): A fuzzy finder.
-*   [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig): Language Server Protocol support.
-*   [stevearc/conform.nvim](https://github.com/stevearc/conform.nvim): Auto-formatting.
-*   [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp): Autocompletion.
-*   [folke/todo-comments.nvim](https://github.com/folke/todo-comments.nvim): Highlights TODO, FIXME, etc., comments.
-*   [echasnovski/mini.nvim](https://github.com/echasnovski/mini.nvim): A collection of useful mini plugins.
-*   [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter): Improved syntax highlighting and more.
-*   [Diogo-ss/42-header.nvim](https://github.com/Diogo-ss/42-header.nvim): Plugin for managing 42 headers.
-*   [hardyrafael17/norminette42.nvim](https://github.com/hardyrafael17/norminette42.nvim): Plugin for running norminette (42 standard).
-*   [sakhnik/nvim-gdb](https://github.com/sakhnik/nvim-gdb): Plugin for integrating GDB, LLDB, etc...
-*   [numToStr/Comment.nvim](https://github.com/numToStr/Comment.nvim): Plugin for commenting/uncommenting code.
-*   [numToStr/FTerm.nvim](https://github.com/numToStr/FTerm.nvim): Floating terminal.
-*   [mg979/vim-visual-multi](https://github.com/mg979/vim-visual-multi): Plugin for multiple selections/edits.
-*   [folke/noice.nvim](https://github.com/folke/noice.nvim): Redefining the UI
-*   [folke/lazydev.nvim](https://github.com/folke/lazydev.nvim): Plugin to Improve the lua development of nvim configuration
-*   [3rd/image.nvim](https://github.com/3rd/image.nvim): Plugin to Open images files
-	*   [b0o/nvim-tree-preview.lua](https://github.com/b0o/nvim-tree-preview.lua): Plugin to Open Previews files
-	*   [nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim): Plugin usefuls lua utils
-*   (plus several dependencies of the above)
+## Installation
 
-## 🎨 Colorscheme
+1. Clonez ce dépôt :
+   ```bash
+   git clone https://github.com/username/nvim-config.git ~/.config/nvim
+   ```
 
-*   [eldritch-theme/eldritch.nvim](https://github.com/Eldritch-theme/eldritch.nvim): A dark colorscheme that provides a consistent UI.
+2. Lancez Neovim :
+   ```bash
+   nvim
+   ```
 
-## ⌨️ Keybindings
+3. Laissez lazy.nvim installer automatiquement les plugins.
 
-| Keybinding   | Description                                                   |
-| :----------- | :------------------------------------------------------------ |
-| `<leader>q`  | Open diagnostic Quickfix list                                 |
-| `<C-Left>`   | Move focus to the left window                                 |
-| `<C-Right>`  | Move focus to the right window                                |
-| `<Esc>`      | Clear search highlights                                         |
-| `<leader>e`  | Toggle NvimTree                                               |
-| `<S-h>`      | Telescope Buffers                                             |
-| `<leader>n`  | Open Vertical Split New File                                    |
-| `<C-/>`       | Comment/Uncomment single lines/blocks                           |
-| `<leader>cb` | Comment the selected block of text                              |
-| `<leader>N`  | Run norminette on current file                                |
-| `<leader>F`  | Find .c files and append to Makefile                          |
-| `<leader>d`  | Start LLDB for debugging                                      |
-| `<leader>mm` | Make project                                                  |
-| `<leader>mc` | Clean project                                                 |
-| `<leader>mf` | Force Clean project                                             |
-| `<leader>mr` | Rebuild project                                               |
-| `<leader>mn` | Run norminette                                                |
-| `P`          | Preview (Watch) [NvimTree]                                      |
-| `<Esc>`      | Close Preview/Unwatch [NvimTree]                                  |
-| `<Tab>`      | Toggle focus between NvimTree and preview                       |
-| `<C-f>`      | Scroll Down (preview window)                                    |
-| `<C-b>`      | Scroll Up (preview window)                                      |
+## Dépendances
 
-## 💡 Contact
+- Neovim ≥ 0.9.0
+- Git
+- Compilateur C (pour certains plugins)
+- (Optionnel) [Nerd Font](https://www.nerdfonts.com/) pour les icônes
+- Serveurs LSP (installés automatiquement avec Mason)
 
-If you have any questions or need help with this configuration, feel free to contact me at <edesprez@student.42.fr>.
+## Raccourcis clavier principaux
 
----
+| Touche          | Mode | Description                  |
+|-----------------|------|------------------------------|
+| `<Space>`       | N    | Leader                       |
+| `<Space>e`      | N    | Explorateur de fichiers      |
+| `<Space>ff`     | N    | Rechercher fichiers          |
+| `<Space>fg`     | N    | Rechercher dans le contenu   |
+| `<Space>fb`     | N    | Rechercher dans les buffers  |
+| `gd`            | N    | Aller à la définition        |
+| `K`             | N    | Afficher la documentation    |
+| `<Space>ca`     | N    | Action de code               |
+| `<Space>f`      | N    | Formater le code             |
+| `<F1>`          | N    | Insérer en-tête 42           |
+| `<Space>nh`     | N    | Norminette sur en-tête       |
+| `<Space>nn`     | N    | Exécuter Norminette          |
+| `<Ctrl>s`       | N    | Sauvegarder                  |
+| `<Space>q`      | N    | Sauvegarder et quitter       |
 
-**edesprez**  
-42 Student @ Paris
+## Personnalisation
+
+La configuration est facilement personnalisable via le fichier `lua/config.lua` qui centralise les options principales.
+
+Pour ajouter un plugin, modifiez le fichier `lua/plugins.lua` en suivant le format de lazy.nvim.
+
+## Support
+
+Pour signaler un problème ou suggérer une amélioration, veuillez ouvrir une issue sur GitHub.
+
+## Licence
+
+MIT

@@ -431,8 +431,17 @@ return {
       -- Spécifier les sources pour Makefile (ajoute ce bloc)
       cmp.setup.filetype('Makefile', {
         sources = cmp.config.sources {
-          { name = 'path' },
-          { name = 'buffer' },
+          { name = 'path', priority = 1000 },
+          { name = 'buffer', priority = 900 },
+          { name = 'cmdline', priority = 800 },
+        },
+        completion = {
+          autocomplete = true,
+          trigger_characters = { '.', '/' },
+        },
+        mapping = cmp.mapping.preset.insert {
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<CR>'] = cmp.mapping.confirm { select = true },
         },
       })
 
@@ -712,7 +721,7 @@ return {
     -- vim.g.VM_maps['Find Under'] = '<C-d>' -- exemple pour remaper
     init = function()
       -- Définir des variables globales AVANT le chargement si nécessaire
-      -- vim.g.VM_leader = '\\' -- Changer la leader key de VM si besoin
+      vim.g.VM_leader = '\\' -- Changer la leader key de VM si besoin
     end,
   },
 

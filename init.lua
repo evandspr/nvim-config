@@ -1,77 +1,45 @@
 --[[
 =====================================================================
-====================       KICKSTART.NVIM       =====================
+==================== CONFIGURATION NEOVIM OPTIMISÉE =================
 =====================================================================
-  Ton fichier de configuration principal. Garde les options
-  globales et charge les autres modules (plugins, keybinds, colors).
+  Fichier d'initialisation principal pour une configuration Neovim
+  modulaire, performante et fonctionnelle.
 =====================================================================
 --]]
 
--- Leader key (doit être défini tôt)
+-- Leader key (défini tôt pour éviter les problèmes de mappings)
 vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+vim.g.maplocalleader = '\\'
 
--- Flag pour Nerd Font (utilisé par certains plugins)
-vim.g.have_nerd_font = true -- Met à true si tu utilises une Nerd Font
+-- Paramètre pour les Nerd Fonts
+vim.g.have_nerd_font = true
 
--- Options globales de Neovim (gardées ici pour la clarté)
--- Voir `:help vim.opt`
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.mouse = 'a'
-vim.opt.showmode = false
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus' -- Attention: peut ralentir le démarrage
-end)
-vim.opt.breakindent = true
-vim.opt.undofile = true
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-vim.opt.signcolumn = 'yes'
-vim.opt.updatetime = 250
-vim.opt.timeoutlen = 300
-vim.opt.splitright = true
-vim.opt.splitbelow = true
-vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-vim.opt.inccommand = 'split'
-vim.opt.cursorline = true
-vim.opt.scrolloff = 10
-vim.opt.confirm = true
-vim.opt.termguicolors = true -- Important pour les thèmes modernes
-
--- Désactiver netrw (NvimTree le remplacera)
+-- Désactiver netrw avant tout chargement
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- Autocommand pour surligner le yank
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-})
-
--- Installation et setup de lazy.nvim (Gestionnaire de plugins)
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+-- Installer lazy.nvim s'il n'est pas présent
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
-  if vim.v.shell_error ~= 0 then
-    error('Error cloning lazy.nvim:\n' .. out)
-  end
+  vim.fn.system({
+    'git', 'clone', '--filter=blob:none', '--branch=stable',
+    'https://github.com/folke/lazy.nvim.git', lazypath
+  })
 end
-vim.opt.rtp:prepend(lazypath) -- @diagnostic disable-line: undefined-field
+vim.opt.rtp:prepend(lazypath)
 
--- Chargement des modules personnalisés
-require 'keybinds' -- Charge les raccourcis depuis lua/keybinds.lua
+-- Charger et initialiser la configuration centralisée
+require('config').setup()
 
--- Configuration et chargement des plugins via lazy.nvim
--- La liste des plugins est maintenant dans lua/plugins/init.lua
-require('lazy').setup(require 'plugins', {
+-- Chargement des modules de base
+require('core.options')    -- Options générales
+require('core.keymaps')    -- Mappings globaux
+require('core.autocommands') -- Autocommandes
+
+-- Chargement des plugins via lazy.nvim
+require('lazy').setup('plugins', {
   ui = {
-    -- Icônes pour l'interface de lazy.nvim (optionnel)
+    -- Icônes pour l'interface de lazy.nvim
     icons = vim.g.have_nerd_font and {} or {
       cmd = '⌘',
       config = '🛠',
@@ -85,13 +53,38 @@ require('lazy').setup(require 'plugins', {
       source = '📄',
       start = '🚀',
       task = '📌',
-      lazy = '💤 ',
+      lazy = '💤',
+    },
+  },
+  change_detection = {
+    notify = false,  -- Désactive les notifications de changement de fichier
+  },
+  performance = {
+    rtp = {
+      disabled_plugins = {
+        'gzip',
+        'matchit',
+        'matchparen',
+        'netrwPlugin',
+        'tarPlugin',
+        'tohtml',
+        'tutor',
+        'zipPlugin',
+      },
     },
   },
 })
 
--- Chargement du colorscheme (après que lazy ait potentiellement chargé le plugin)
-require 'colors'
+-- Chargement du colorscheme après l'initialisation des plugins
+require('colors')
 
--- Mode line (laisse la à la fin)
+-- Autocommand pour surligner le texte copié
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Surligne le texte copié',
+  group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
+  callback = function()
+    vim.highlight.on_yank({ higroup = 'IncSearch', timeout = 300 })
+  end,
+})
+
 -- vim: ts=2 sts=2 sw=2 et
