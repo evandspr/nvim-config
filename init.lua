@@ -65,23 +65,33 @@ end
 vim.opt.rtp:prepend(lazypath) -- @diagnostic disable-line: undefined-field
 
 -- Chargement des modules personnalisés
-require('keybinds') -- Charge les raccourcis depuis lua/keybinds.lua
+require 'keybinds' -- Charge les raccourcis depuis lua/keybinds.lua
 
 -- Configuration et chargement des plugins via lazy.nvim
 -- La liste des plugins est maintenant dans lua/plugins/init.lua
-require('lazy').setup(require('plugins'), {
+require('lazy').setup(require 'plugins', {
   ui = {
     -- Icônes pour l'interface de lazy.nvim (optionnel)
     icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘', config = '🛠', event = '📅', ft = '📂', init = '⚙',
-      keys = '🗝', plugin = '🔌', runtime = '💻', require = '🌙',
-      source = '📄', start = '🚀', task = '📌', lazy = '💤 ',
+      cmd = '⌘',
+      config = '🛠',
+      event = '📅',
+      ft = '📂',
+      init = '⚙',
+      keys = '🗝',
+      plugin = '🔌',
+      runtime = '💻',
+      require = '🌙',
+      source = '📄',
+      start = '🚀',
+      task = '📌',
+      lazy = '💤 ',
     },
   },
 })
 
 -- Chargement du colorscheme (après que lazy ait potentiellement chargé le plugin)
-require('colors')
+require 'colors'
 
 -- Mode line (laisse la à la fin)
 -- vim: ts=2 sts=2 sw=2 et

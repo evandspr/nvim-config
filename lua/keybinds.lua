@@ -34,3 +34,21 @@ map('n', '<leader><Right>', '<cmd>tabnext<CR>', { desc = 'Next Tab', silent = tr
 
 -- Raccourci pour ouvrir un terminal dans un split vertical (à droite)
 map('n', '<leader>t', '<cmd>vert terminal<CR>', { desc = '[T]oggle/Open Vertical Terminal' })
+
+-- Nouvelle cartographies (ajout/remplacement)
+map('n', '<C-s>', '<cmd>w!<CR>', { desc = 'Save all changes' })
+map('n', '<leader>q', '<cmd>wqa<CR>', { desc = 'Save and Quit All' })
+map('n', '<leader>Q', '<cmd>qa!<CR>', { desc = 'Quit All (Forced)' })
+map('n', '<leader>Qw', '<cmd>qall!<CR>', { desc = 'Quit All (Forced)' })
+
+map('n', '<leader>n', '<cmd>vsplit<CR>', { desc = 'Open Vertical Split New File' })
+
+--  Raccourcis spécifique à des commandes externes (norminette, makefile, lldb)
+--  Assurez-vous que ces commandes sont disponibles dans votre PATH.
+
+map('n', '<leader>N', '<cmd>!norminette %<CR>', { desc = 'Run norminette on current file' })
+-- Note : le % sera remplacé par le nom du fichier courant.
+
+map('n', '<leader>F', '<cmd>!find . -name "*.c" -print0 | xargs -0 echo >> Makefile<CR>', { desc = 'Find .c files and append to Makefile' })
+--Attention: Cette commande écrase à la fin du Makefile.  Adaptez selon vos besoins.
+map('n', '<leader>d', '<cmd>!lldb %<CR>', { desc = 'Start LLDB for debugging' })
